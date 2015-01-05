@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <style>
+        h3 {font-size:600% ;color:blue ; text-align:center}
+        p {font-size:200% }
+
+        h4 {color:Brown ;font-size:200%; position:relative;
+    transition: .5s ease;
+    top: 8px;
+    left: 400px;
+    right: 200px;
+    bottom: 191px;}
+        h5 {text-align:cleft ;color:Red}
+        form {text-align:center}
+    </style>
+    <title> Export To CSV </title>
+</head>
+<body background="/static/zonar.jpeg">
+
+<h3>ZONAR</h3>
+<h4><u>IMPORT</u></h4>
+<form action="/import" method="POST">
+   FILENAME:<input type='text' name='filename' placeholder='Enter filename'>
+   <p> </p>
+   <button type='submit'>Submit!!</button> <button type='reset'>clear</button>
+</form>
+
+
+<hr>
+
+<h4><u>EXPORT</u></h4>
+<h5>${hello}</h5>
+
+
+<form action="/export" method="POST">
+    <button type='submit'>EXPORT TO CSV!!</button>
+
+</form>
+
+
+</body>
+</html>
