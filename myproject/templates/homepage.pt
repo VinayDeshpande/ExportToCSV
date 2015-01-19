@@ -11,15 +11,17 @@
     left: 400px;
     right: 200px;
     bottom: 191px;}
-        h5 {text-align:cleft ;color:Red}
+        h5 {text-align:left ;color:Red}
+        h6 {font-family:"Times New Roman" ;color:purple;text-align:right}
         form {text-align:center}
     </style>
     <title> Export To CSV </title>
 </head>
 <body background="/static/zonar.jpeg">
-
+<h6><u><i><a href="Secondpage.pt">Click here to check out the distance between two points</a></i></u></h6>
 <h3>ZONAR</h3>
 <h4><u>IMPORT</u></h4>
+
 <form action="/import" method="POST">
    FILENAME:<input type='text' name='filename' placeholder='Enter filename'>
    <p> </p>
@@ -30,13 +32,16 @@
 <hr>
 
 <h4><u>EXPORT</u></h4>
-<h5>${hello}</h5>
+<h5><u>${hello}</u></h5>
+
+
 
 
 <form action="/export" method="POST">
     <button type='submit'>EXPORT TO CSV!!</button>
 
 </form>
+
 
 
 </body>
