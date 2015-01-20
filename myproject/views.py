@@ -9,12 +9,14 @@ import os
 import time
 from models import Points
 from shapely import wkt
-from shapely.geometry import Point
+from shapely.geometry import Point, LineString
 import geoalchemy2.functions as geofunc
 from sqlalchemy.sql import label
 import json
 from shapely.wkt import dumps, loads
 from shapely.geometry import mapping, shape
+import itertools
+import math
 
 engine = create_engine('postgresql://vinay:aditi@localhost:5432/eventsapp')
 
@@ -97,18 +99,27 @@ def diplay_view(request):
     po = label('po', geofunc.ST_AsGeoJSON(Points.points))
     item = session.query(Points, po)
     item = item.all()
-    # print "#######", type(item)
-    points=None
+    points = []
     for i in item:
-        # print dir(i)
-        # print i.__getattribute__
+        coords = json.loads(i.po).get('coordinates')
+        position = (coords[0], coords[1]) #tuple (x, y)
+        points.append(position) #list [(x, t), (x, y)]
+    i=0
+    for p in points[0:1]:
+        x1=p[0]
+        y1=p[1]
+        print x1,y1
+    i=i+1
+    for p in points[i:i+1]:
+        x2=p[0]
+        y2=p[1]
+        print x2,y2
 
-        # l=[]
-        # l=i.points
+    a=(x2-x1)*(x2-x1)
+    b=(y2-y1)*(y2-y1)
+    c=math.sqrt(a+b)
 
-        # print st
-        points = json.loads(i.po).get('coordinates')
-        points = Point(points[0], points[1])
-        print points
 
-    return {"hello": points}
+
+
+    return {"hello": c}
