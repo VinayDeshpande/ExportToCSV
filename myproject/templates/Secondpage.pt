@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <style>
+        h3 {font-size:600% ;color:blue ; text-align:center}
+        p {font-size:200% }
+
+        h4 {color:purple ;text-align:left}
+        h5 {text-align:left ;color:Red}
+        form {text-align:center}
+    </style>
+    <title> Export To CSV </title>
+</head>
+<body background="/static/zonar.jpeg">
+
+<h3>ZONAR</h3>
+<script type="text/javascript">
+function calculate() {
+
+var x1 = document.myform.lat1.value;
+var x2 = document.myform.lat2.value;
+var y1 = document.myform.long1.value;
+var y2 = document.myform.long2.value;
+
+var a=(x2-x1)*(x2-x1)
+var b=(y2-y1)*(y2-y1)
+var dist=Math.sqrt(a+b)
+document.getElementById('res').value = dist;
+}
+</script>
+
+
+<h4>${hello}</h4>
+<form name="myform">
+   LAT1: <input type="text" name='lat1' placeholder='Enter LATITUDE1'> LONG1:<input type="text" name='long1' placeholder='Enter LONGITUDE1'>
+   <br>
+   LAT2: <input type="text" name='lat2' placeholder='Enter LATITUDE2'> LONG2:<input type="text" name='long2' placeholder='Enter LONGITUDE2'>
+   <br>
+   <br>
+   <br>
+   <button type='reset'>clear</button>
+   <br>
+   <input type="button" value="calculate" onclick="calculate();">
+   <br>
+   <br>
+   <input type="text" id='res' placeholder='RESULT!'>Kilometers!!
+</form>
+
+<form action="display" name="forms">
+<button type = 'submit'>DISPLAY!!</button>
+</form>
+
+</body>
+</html>
