@@ -17,6 +17,7 @@ from shapely.wkt import dumps, loads
 from shapely.geometry import mapping, shape
 import itertools
 import math
+from collections import OrderedDict
 
 engine = create_engine('postgresql://vinay:aditi@localhost:5432/eventsapp')
 
@@ -96,30 +97,27 @@ def latlong_view(request):
 @view_config(route_name='display', renderer='templates/Secondpage.pt')
 def diplay_view(request):
 
-    po = label('po', geofunc.ST_AsGeoJSON(Points.points))
+    po = label('po', geofunc.ST_AsGeoJSON(Points.coords))
     item = session.query(Points, po)
     item = item.all()
     points = []
     for i in item:
         coords = json.loads(i.po).get('coordinates')
         position = (coords[0], coords[1]) #tuple (x, y)
-        points.append(position) #list [(x, t), (x, y)]
-    i=0
-    for p in points[0:1]:
-        x1=p[0]
-        y1=p[1]
-        print x1,y1
-    i=i+1
-    for p in points[i:i+1]:
-        x2=p[0]
-        y2=p[1]
-        print x2,y2
+        points.append(position) #list [(x, y), (x, y)]
+    distances = {}
+    for i in range(len(points)):
+        for j in range(i+1, len(points)):
+            pt1 = points[i]
+            pt2 = points[j]
+            pts = (pt1, pt2)
+            a = abs((pt2[0] - pt1[0]) ** 2)
+            b = abs((pt2[1] - pt1[1]) ** 2)
+            dist = math.sqrt(a + b)
 
-    a=(x2-x1)*(x2-x1)
-    b=(y2-y1)*(y2-y1)
-    c=math.sqrt(a+b)
+            distances[pts] = dist
 
 
-
-
-    return {"hello": c}
+    sorted_dict =sorted(distances.items(), key=lambda x: x[1])
+    print sorted_dict[0:5]
+    return {"hello": " "}

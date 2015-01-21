@@ -29,7 +29,7 @@ class Points(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    points = Column(Geometry('POINT'))
+    coords = Column(Geometry('POINT'))
     assets = Column(String)
 
 
