@@ -33,4 +33,12 @@ class Points(Base):
     assets = Column(String)
 
 
+class ZoneGeoms(Base):
+    __tablename__ = 'zonegeoms'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    geom = Column(Geometry('POLYGON'))
+    description = Column(String)
+
 Base.metadata.create_all(engine)

@@ -50,5 +50,11 @@ document.getElementById('res').value = dist;
 <button type = 'submit'>DISPLAY!!</button>
 </form>
 
+
+<form action="kml" name="myforms">
+<button type = 'submit'>Export to KML!!</button>
+</form>
+
+
 </body>
 </html>

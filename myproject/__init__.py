@@ -15,6 +15,7 @@ def main(global_config, **settings):
     config.add_route('home', '/export')
     config.add_route('importroute', '/import')
     config.add_route('display', '/display')
+    config.add_route('kml', '/kml')
     config.scan()
     return config.make_wsgi_app()
 

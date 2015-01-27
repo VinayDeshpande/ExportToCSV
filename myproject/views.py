@@ -17,6 +17,7 @@ from shapely.wkt import dumps, loads
 from shapely.geometry import mapping, shape
 import itertools
 import math
+from models import ZoneGeoms
 from collections import OrderedDict
 
 engine = create_engine('postgresql://vinay:aditi@localhost:5432/eventsapp')
@@ -44,7 +45,7 @@ def export_view(request):
     f = open('test.csv', 'wb')
     for row in list1:
         l = [row.id, row.Name, row.Email_id, row.Address]
-
+        print l
         wr = csv.writer(f, dialect='excel')
         wr.writerow(l)
     f.close()
@@ -121,3 +122,44 @@ def diplay_view(request):
     sorted_dict =sorted(distances.items(), key=lambda x: x[1])
     print sorted_dict[0:5]
     return {"hello": " "}
+
+
+@view_config(route_name='kml', renderer='templates/Secondpage.pt')
+def kml_view(request):
+
+    outfile = file("file1.kml", 'w')
+    download_path = os.getcwd() + '/'+'file1.kml'
+    data = session.query(ZoneGeoms).all()
+
+    l1 = []
+    for row in data:
+        l = {
+            'row_id': row.id,
+            'row_name': row.name,
+            'row_geom': row.geom,
+            'row_description': row.description
+        }
+        l1.append(l)
+
+    for x in l1:
+        outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        outfile.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
+        outfile.write('<placemark>\n')
+        outfile.write('  <row>\n')
+        outfile.write('    <id>%s</id>\n' % x['row_id'])
+        outfile.write('    <name>%s</name>\n' % x['row_name'])
+        outfile.write('    <geom>%s</geom>\n' % x['row_geom'])
+        outfile.write('    <description>%s</description>\n' % x['row_description'])
+        outfile.write('  </row>\n')
+        outfile.write('</placemark>\n')
+
+
+    response = Response(content_type='application/force-download', content_disposition='attachment; filename='+ 'file1.kml')
+    response.app_iter = open(download_path, 'rb')
+    outfile.close()
+
+    return response
+
+
+
+
