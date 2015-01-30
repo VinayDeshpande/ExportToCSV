@@ -41,4 +41,14 @@ class ZoneGeoms(Base):
     geom = Column(Geometry('POLYGON'))
     description = Column(String)
 
+class ZoneGeomPoly(Base):
+    __tablename__ = "zonegeompoly"
+
+    id = Column(Integer,primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    outerboundary = Column(Geometry('POLYGON'))
+    innerboundary = Column(Geometry('POLYGON'))
+
+
 Base.metadata.create_all(engine)

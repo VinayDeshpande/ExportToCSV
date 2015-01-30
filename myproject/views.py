@@ -17,8 +17,9 @@ from shapely.wkt import dumps, loads
 from shapely.geometry import mapping, shape
 import itertools
 import math
-from models import ZoneGeoms
+from models import ZoneGeomPoly
 from collections import OrderedDict
+import simplekml
 
 engine = create_engine('postgresql://vinay:aditi@localhost:5432/eventsapp')
 
@@ -104,8 +105,8 @@ def diplay_view(request):
     points = []
     for i in item:
         coords = json.loads(i.po).get('coordinates')
-        position = (coords[0], coords[1]) #tuple (x, y)
-        points.append(position) #list [(x, y), (x, y)]
+        position = (coords[0], coords[1])
+        points.append(position)
     distances = {}
     for i in range(len(points)):
         for j in range(i+1, len(points)):
@@ -127,36 +128,41 @@ def diplay_view(request):
 @view_config(route_name='kml', renderer='templates/Secondpage.pt')
 def kml_view(request):
 
-    outfile = file("file1.kml", 'w')
-    download_path = os.getcwd() + '/'+'file1.kml'
-    data = session.query(ZoneGeoms).all()
 
+    po = label('po', geofunc.ST_AsGeoJSON(ZoneGeomPoly.outerboundary))
+    item = session.query(ZoneGeomPoly, po)
+    item = item.all()
+    points = []
+    location=[]
+    for i in item:
+        coords = json.loads(i.po).get('coordinates')
+        location = coords[0]
+        position = (location[0], location[1], location[2], location[3], location[4]) #tuple (x, y)
+
+        points.append(position)
+
+    data = session.query(ZoneGeomPoly).all()
     l1 = []
     for row in data:
         l = {
             'row_id': row.id,
             'row_name': row.name,
-            'row_geom': row.geom,
             'row_description': row.description
         }
         l1.append(l)
 
-    for x in l1:
-        outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        outfile.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
-        outfile.write('<placemark>\n')
-        outfile.write('  <row>\n')
-        outfile.write('    <id>%s</id>\n' % x['row_id'])
-        outfile.write('    <name>%s</name>\n' % x['row_name'])
-        outfile.write('    <geom>%s</geom>\n' % x['row_geom'])
-        outfile.write('    <description>%s</description>\n' % x['row_description'])
-        outfile.write('  </row>\n')
-        outfile.write('</placemark>\n')
 
 
-    response = Response(content_type='application/force-download', content_disposition='attachment; filename='+ 'file1.kml')
+    kml = simplekml.Kml()
+    download_path = os.getcwd() + '/'+'kmlfile2.kml'
+
+    for d in l1:
+        for p in points:
+            pol = kml.newpolygon(name=d['row_name'], description=d['row_description'],outerboundaryis=p)
+
+    kml.save('kmlfile2.kml')
+    response = Response(content_type='application/force-download', content_disposition='attachment; filename='+ 'kmlfile2.kml')
     response.app_iter = open(download_path, 'rb')
-    outfile.close()
 
     return response
 
